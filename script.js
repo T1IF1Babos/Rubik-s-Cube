@@ -11,8 +11,6 @@ var stats;
 
 var animation = true;
 
-var cube;
-
 function init() {
 	// Set Variables
 	canvas = document.getElementById("canvas");
@@ -27,9 +25,9 @@ function init() {
 	scene = new THREE.Scene();
 
 	camera = new THREE.PerspectiveCamera(50, canvas.width / canvas.height, 1, 10000);
-	camera.position.x = 5;
-	camera.position.y = 5;
-	camera.position.z = 5;
+	camera.position.x = 100;
+	camera.position.y = 100;
+	camera.position.z = 100;
 	camera.lookAt(scene.position);
 
 	// set State
@@ -38,16 +36,12 @@ function init() {
 
 
 	// Set Light
-	var ambient = new THREE.AmbientLight("#222222");
-	var directionalLight1 = new THREE.DirectionalLight("#ffffff");
-	var directionalLight2 = new THREE.DirectionalLight("#ffffff");
-
-	directionalLight1.position.set(70, -70, 100).normalize();
-	directionalLight2.position.set(-70, 70, -100).normalize();
-
+	var ambient = new THREE.AmbientLight("#ffffff");
 	scene.add(ambient);
-	scene.add(directionalLight1);
-	scene.add(directionalLight2);
+
+	var directionalLight = new THREE.DirectionalLight("#ffffff");
+	directionalLight.position.set(50, 50, 50);
+	scene.add( directionalLight );
 
 
 	drawCube();
@@ -59,18 +53,31 @@ function drawCube() {
 		console.log(item, loaded, total);
 	};
 
+	var texture = new THREE.Texture();
+
 	var onProgress = function(xhr) {
 		if (xhr.lengthComputable) {
 			var percentComplete = xhr.loaded / xhr.total * 100;
-			console.log( Math.round(percentComplete, 2) + '% downloaded' );
+			console.log(Math.round(percentComplete, 2) + "% downloaded");
 		}
 	};
 
-	var onError = function ( xhr ) {
-	};
+	var onError = function(xhr) {};
 
-	var loader = new THREE.OBJLoader(manager);
-	loader.load("objects/cubeTexture.obj", function(object) {
+	var loader = new THREE.ImageLoader(manager);
+	loader.load("images/UV_Grid_Sm.jpg", function(image) {
+		texture.image = image;
+		texture.needsUpdate = true;
+	});
+
+	loader = new THREE.OBJLoader(manager);
+	loader.load("objects/cube.obj", function(object) {
+		object.traverse(function(child) {
+			if (child instanceof THREE.Mesh) {
+				child.material.map = texture;
+			}
+		});
+
 		object.position.set(0, 0, 0);
 		scene.add(object);
 	}, onProgress, onError);
