@@ -47,13 +47,10 @@ function init() {
 	scene.add( directionalLight );
 
 
-	drawCube();
+	drawObject();
 	render();
 }
-function drawCube() {
-	wgr = getObject("wgr");
-}
-function getObject(ObjectName) {
+function drawObject() {
 	var manager = new THREE.LoadingManager();
 	manager.onProgress = function(item, loaded, total) {
 		console.log(item, loaded, total);
@@ -71,13 +68,13 @@ function getObject(ObjectName) {
 	var onError = function(xhr) {};
 
 	var loader = new THREE.ImageLoader(manager);
-	loader.load("images/Unbenannt.png", function(image) {
+	loader.load("textures/texture.png", function(image) {
 		texture.image = image;
 		texture.needsUpdate = true;
 	});
 
 	loader = new THREE.OBJLoader(manager);
-	loader.load("objects/" + ObjectName + ".obj", function(object) {
+	loader.load("objects/cube_main_texture.obj", function(object) {
 		object.traverse(function(child) {
 			if (child instanceof THREE.Mesh) {
 				child.material.map = texture;
@@ -90,7 +87,6 @@ function getObject(ObjectName) {
 }
 function render() {
 	if (animation) requestAnimationFrame(render);
-
 
 
 	stats.update();
