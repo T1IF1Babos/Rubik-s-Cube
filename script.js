@@ -11,6 +11,9 @@ var stats;
 
 var animation = true;
 
+var wgr;
+
+
 function init() {
 	// Set Variables
 	canvas = document.getElementById("canvas");
@@ -48,6 +51,9 @@ function init() {
 	render();
 }
 function drawCube() {
+	wgr = getObject("wgr");
+}
+function getObject(ObjectName) {
 	var manager = new THREE.LoadingManager();
 	manager.onProgress = function(item, loaded, total) {
 		console.log(item, loaded, total);
@@ -65,13 +71,13 @@ function drawCube() {
 	var onError = function(xhr) {};
 
 	var loader = new THREE.ImageLoader(manager);
-	loader.load("images/UV_Grid_Sm.jpg", function(image) {
+	loader.load("images/Unbenannt.png", function(image) {
 		texture.image = image;
 		texture.needsUpdate = true;
 	});
 
 	loader = new THREE.OBJLoader(manager);
-	loader.load("objects/cube.obj", function(object) {
+	loader.load("objects/" + ObjectName + ".obj", function(object) {
 		object.traverse(function(child) {
 			if (child instanceof THREE.Mesh) {
 				child.material.map = texture;
