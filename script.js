@@ -11,7 +11,8 @@ var stats;
 
 var animation = true;
 
-var wgr;
+var cr, wgr, wr, wrb, rb, rby, ry, gry, gr, wg, cw, wb, cb, by, cy, gy, cg, wog, wo, wob, ob, boy, oy, ogy, co;
+		var cubes = [cr, wgr, wr, wrb, rb, rby, ry, gry, gr, wg, cw, wb, cb, by, cy, gy, cg, wog, wo, wob, ob, boy, oy, ogy, co];
 
 
 function init() {
@@ -74,6 +75,8 @@ function drawObject() {
 	});
 
 	loader = new THREE.OBJLoader(manager);
+
+	//-------------------
 	loader.load("objects/cube_main_texture.obj", function(object) {
 		object.traverse(function(child) {
 			if (child instanceof THREE.Mesh) {
@@ -81,13 +84,58 @@ function drawObject() {
 			}
 		});
 
-		object.position.set(0, 0, 0);
-		scene.add(object);
+		wgr = object;
+		wgr.position.set(0, 0,0);
+		scene.add(wgr);
+
 	}, onProgress, onError);
+	//-----------------
+	for (var i = 0; i < cubes.length; i++) {
+		var list = {
+			0: cr,
+			1: wgr,
+			2: wr,
+			3: wrb,
+			4: rb,
+			5: rby,
+			6: ry,
+			7: gry,
+			8: gr,
+			9: wg,
+			10: cw,
+			11: wb,
+			12: cb,
+			13: by,
+			14: cy,
+			15: gy,
+			16: cg,
+			17: wog,
+			18: wo,
+			19: wob,
+			20: ob,
+			21: boy,
+			22: oy,
+			23: ogy,
+			24: co
+		}
+
+		loader.load("object/" + list.i + ".obj", function(object) {
+			object.traverse(function(child) {
+				if (child instanceof THREE.Mesh) {
+					child.material.map = texture;
+				}
+			});
+
+			cubes[i] = object;
+			scene.add(cubes[i]);
+
+		}, onProgress, onError);
+	}
 }
 function render() {
 	if (animation) requestAnimationFrame(render);
 
+	wgr.rotation.x += 0.01;
 
 	stats.update();
 	renderer.render(scene, camera);
